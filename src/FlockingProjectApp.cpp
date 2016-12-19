@@ -60,6 +60,7 @@ int const numBirds = 1024;
 
 void FlockingProjectApp::prepSettings(Settings * settings) {
 	settings->setFullScreen();
+	settings->setHighDensityDisplayEnabled();
 }
 
 void FlockingProjectApp::setup()
