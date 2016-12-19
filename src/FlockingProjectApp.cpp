@@ -16,6 +16,10 @@ vec2 limit(vec2 v, float lim) {
 	// else
 	return v;
 }
+
+template <typename T>
+size_t vecContentBytes(vector<T> const & vec) {
+	return sizeof(T) * vec.size();
 }
 
 class FlockingProjectApp : public App {
@@ -27,7 +31,11 @@ class FlockingProjectApp : public App {
 	void update() override;
 	void draw() override;
 
-	float mBirdSize = 2.0f;
+	void keyDown(KeyEvent evt) override;
+
+	void addRandomBird();
+
+	float mBirdSize = 3.0f;
 	float mMaxSpeed = 2.0f;
 	float mMaxForce = 0.03f;
 
@@ -39,10 +47,16 @@ class FlockingProjectApp : public App {
 	vector<vec2> mAccelerations;
 
 	gl::VboRef mPositionsVbo;
+	geom::BufferLayout mPosBufferLayout;
+	gl::VboRef mVelocityVbo;
+	geom::BufferLayout mVelBufferLayout;
+
 	gl::VboMeshRef mPointMesh;
+	gl::GlslProgRef mBirdRenderProg;
+	gl::BatchRef mBirdRenderBatch;
 };
 
-int const numBirds = 300;
+int const numBirds = 1024;
 
 void FlockingProjectApp::prepSettings(Settings * settings) {
 	settings->setFullScreen();
@@ -54,18 +68,34 @@ void FlockingProjectApp::setup()
 	mHeight = getWindowHeight();
 
 	for (int i = 0; i < numBirds; i++) {
-		mPositions.push_back(randVec2() * randFloat() * vec2(getWindowSize() / 2) + vec2(getWindowSize() / 2));
-		mVelocities.push_back(randVec2());
-		mAccelerations.push_back(vec2(0));
+		addRandomBird();
 	}
 
 	mPositionsVbo = gl::Vbo::create(GL_ARRAY_BUFFER, mPositions, GL_STREAM_DRAW);
-	auto posBufferLayout = geom::BufferLayout({ geom::AttribInfo(geom::POSITION, 2, 0, 0) });
-	mPointMesh = gl::VboMesh::create(mPositions.size(), GL_POINTS, { { posBufferLayout, mPositionsVbo } });
+	mPosBufferLayout = geom::BufferLayout({ geom::AttribInfo(geom::POSITION, 2, 0, 0) });
+	mVelocityVbo = gl::Vbo::create(GL_ARRAY_BUFFER, mVelocities, GL_STREAM_DRAW);
+	mVelBufferLayout = geom::BufferLayout({ geom::AttribInfo(geom::CUSTOM_0, 2, 0, 0) });
+
+	mPointMesh = gl::VboMesh::create(mPositions.size(), GL_POINTS, { { mPosBufferLayout, mPositionsVbo }, { mVelBufferLayout, mVelocityVbo } });
+	mBirdRenderProg = gl::GlslProg::create(loadAsset("renderBirds_v.glsl"), loadAsset("renderBirds_f.glsl"), loadAsset("renderBirds_g.glsl"));
+	mBirdRenderProg->uniform("uBirdSize", mBirdSize);
+	mBirdRenderBatch = gl::Batch::create(mPointMesh, mBirdRenderProg, { {geom::CUSTOM_0, "birdVelocity"} });
 }
 
-void FlockingProjectApp::mouseDown( MouseEvent event )
-{
+void FlockingProjectApp::addRandomBird() {
+	mPositions.push_back(randVec2() * randFloat() * vec2(getWindowSize() / 2) + vec2(getWindowSize() / 2));
+	mVelocities.push_back(randVec2());
+	mAccelerations.push_back(vec2(0));
+}
+
+void FlockingProjectApp::mouseDown( MouseEvent event ) {
+
+}
+
+void FlockingProjectApp::keyDown(KeyEvent evt) {
+	if (evt.getCode() == KeyEvent::KEY_ESCAPE) {
+		quit();
+	}
 }
 
 void FlockingProjectApp::update()
@@ -75,16 +105,16 @@ void FlockingProjectApp::update()
 		vec2 & vel = mVelocities[i];
 		vec2 & acc = mAccelerations[i];
 
-		static float separationNeighborDist = 25.0f;
-		static float alignNeighborDist = 50.0f;
-		static float cohesionNeighborDist = 50.0f;
 		// separation from neighbors
+		static float separationNeighborDist = 10.0f;
 		vec2 sepSteer = vec2(0);
 		int separationNeighbors = 0;
 		// average alignment of neighbors
+		static float alignNeighborDist = 30.0f;
 		vec2 alignSteer = vec2(0);
 		int alignmentNeighbors = 0;
 		// average position of neighbors
+		static float cohesionNeighborDist = 50.0f;
 		vec2 cohesionPosition = vec2(0);
 		int cohesionNeighbors = 0;
 
@@ -117,7 +147,7 @@ void FlockingProjectApp::update()
 		}
 
 		if (separationNeighbors > 0) {
-			sepSteer /= separationNeighbors;
+			sepSteer /= (float) separationNeighbors;
 			// It is possible for the separation vectors to cancel each other out, for example
 			// if there are two neighbors directly opposite each other relative to the bird
 			if (length2(sepSteer) > 0) {
@@ -127,14 +157,14 @@ void FlockingProjectApp::update()
 		}
 
 		if (alignmentNeighbors > 0) {
-			alignSteer /= alignmentNeighbors;
+			alignSteer /= (float) alignmentNeighbors;
 			alignSteer = (normalize(alignSteer) * mMaxSpeed) - vel;
 			alignSteer = limit(alignSteer, mMaxForce);
 		}
 
 		vec2 cohesionSteer(0);
 		if (cohesionNeighbors > 0) {
-			cohesionPosition /= cohesionNeighbors;
+			cohesionPosition /= (float) cohesionNeighbors;
 			cohesionSteer = (normalize(cohesionPosition - pos) * mMaxSpeed) - vel;
 			cohesionSteer = limit(cohesionPosition, mMaxForce);
 		}
@@ -154,12 +184,13 @@ void FlockingProjectApp::update()
 
 		// Apply bounds
 		if (pos.x < -mBirdSize) { pos.x = mWidth + mBirdSize; }
-		if (pos.x > mWidth) { pos.x = -mBirdSize; }
 		if (pos.y < -mBirdSize) { pos.y = mHeight + mBirdSize; }
-		if (pos.y > mHeight) { pos.y = -mBirdSize; }
+		if (pos.x > mWidth + mBirdSize) { pos.x = -mBirdSize; }
+		if (pos.y > mHeight + mBirdSize) { pos.y = -mBirdSize; }
 	}
 
-	mPositionsVbo->bufferSubData(0, mPositions.size() * sizeof(vec2), mPositions.data());
+	mPositionsVbo->copyData(vecContentBytes(mPositions), mPositions.data());
+	mVelocityVbo->copyData(vecContentBytes(mVelocities), mVelocities.data());
 }
 
 void FlockingProjectApp::draw()
@@ -168,7 +199,7 @@ void FlockingProjectApp::draw()
 
 	gl::color(Color(1, 1, 1));
 
-	gl::draw(mPointMesh);
+	mBirdRenderBatch->draw();
 
 	gl::drawString(std::to_string(getAverageFps()), vec2(10.0f, 20.0f), ColorA(1.0f, 1.0f, 1.0f, 1.0f));
 }
