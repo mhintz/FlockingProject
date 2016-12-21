@@ -44,7 +44,6 @@ class FlockingProjectApp : public App {
 
 	vector<vec2> mPositions;
 	vector<vec2> mVelocities;
-	vector<vec2> mAccelerations;
 
 	gl::VboRef mPositionsVbo;
 	geom::BufferLayout mPosBufferLayout;
@@ -86,7 +85,6 @@ void FlockingProjectApp::setup()
 void FlockingProjectApp::addRandomBird() {
 	mPositions.push_back(randVec2() * randFloat() * vec2(getWindowSize() / 2) + vec2(getWindowSize() / 2));
 	mVelocities.push_back(randVec2());
-	mAccelerations.push_back(vec2(0));
 }
 
 void FlockingProjectApp::mouseDown( MouseEvent event ) {
@@ -104,7 +102,6 @@ void FlockingProjectApp::update()
 	for (int i = 0, l = mPositions.size(); i < l; i++) {
 		vec2 & pos = mPositions[i];
 		vec2 & vel = mVelocities[i];
-		vec2 & acc = mAccelerations[i];
 
 		// separation from neighbors
 		static float separationNeighborDist = 10.0f;
@@ -174,14 +171,11 @@ void FlockingProjectApp::update()
 		alignSteer *= 1.0;
 		cohesionSteer *= 1.0;
 
-		acc += sepSteer;
-		acc += alignSteer;
-		acc += cohesionSteer;
+		vec2 acc = sepSteer + alignSteer + cohesionSteer;
 
 		vel += acc;
 		vel = limit(vel, mMaxSpeed);
 		pos += vel;
-		acc = vec2(0); // reset each cycle
 
 		// Apply bounds
 		if (pos.x < -mBirdSize) { pos.x = mWidth + mBirdSize; }
