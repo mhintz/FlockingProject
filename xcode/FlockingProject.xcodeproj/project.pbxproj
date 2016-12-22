@@ -27,6 +27,12 @@
 		EF7E4EF11E01CA3E00AE6B47 /* MeshBuilds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EEA1E01CA3E00AE6B47 /* MeshBuilds.cpp */; };
 		EF7E4EF21E01CA3E00AE6B47 /* MeshGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EEC1E01CA3E00AE6B47 /* MeshGroup.cpp */; };
 		EF7E4EF31E01CA3E00AE6B47 /* Vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EEE1E01CA3E00AE6B47 /* Vertex.cpp */; };
+		EFBB7BCA1E0C599800331AB1 /* renderBirds_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC41E0C599800331AB1 /* renderBirds_f.glsl */; };
+		EFBB7BCB1E0C599800331AB1 /* renderBirds_g.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC51E0C599800331AB1 /* renderBirds_g.glsl */; };
+		EFBB7BCC1E0C599800331AB1 /* renderBirds_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC61E0C599800331AB1 /* renderBirds_v.glsl */; };
+		EFBB7BCD1E0C599800331AB1 /* runBirds_v.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC71E0C599800331AB1 /* runBirds_v.glsl */; };
+		EFBB7BCE1E0C599800331AB1 /* runBirdsPosition_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC81E0C599800331AB1 /* runBirdsPosition_f.glsl */; };
+		EFBB7BCF1E0C599800331AB1 /* runBirdsVelocity_f.glsl in Resources */ = {isa = PBXBuildFile; fileRef = EFBB7BC91E0C599800331AB1 /* runBirdsVelocity_f.glsl */; };
 		FEA03FE921E244F590AFCA25 /* CoreMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3DD2192F6AFA4278ADCF95B9 /* CoreMath.cpp */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +76,12 @@
 		EF7E4EED1E01CA3E00AE6B47 /* MeshGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeshGroup.h; path = ../../../cpp/buildmesh/MeshGroup.h; sourceTree = "<group>"; };
 		EF7E4EEE1E01CA3E00AE6B47 /* Vertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vertex.cpp; path = ../../../cpp/buildmesh/Vertex.cpp; sourceTree = "<group>"; };
 		EF7E4EEF1E01CA3E00AE6B47 /* Vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vertex.h; path = ../../../cpp/buildmesh/Vertex.h; sourceTree = "<group>"; };
+		EFBB7BC41E0C599800331AB1 /* renderBirds_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = renderBirds_f.glsl; sourceTree = "<group>"; };
+		EFBB7BC51E0C599800331AB1 /* renderBirds_g.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = renderBirds_g.glsl; sourceTree = "<group>"; };
+		EFBB7BC61E0C599800331AB1 /* renderBirds_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = renderBirds_v.glsl; sourceTree = "<group>"; };
+		EFBB7BC71E0C599800331AB1 /* runBirds_v.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runBirds_v.glsl; sourceTree = "<group>"; };
+		EFBB7BC81E0C599800331AB1 /* runBirdsPosition_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runBirdsPosition_f.glsl; sourceTree = "<group>"; };
+		EFBB7BC91E0C599800331AB1 /* runBirdsVelocity_f.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runBirdsVelocity_f.glsl; sourceTree = "<group>"; };
 		F9A6782771A144499F8B1EA2 /* Item.hpp */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = Item.hpp; path = "../../../../Code/cinder/blocks/core-util/Item.hpp"; sourceTree = "<group>"; };
 		F9C5424548814427980179FE /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +165,7 @@
 			children = (
 				01B97315FEAEA392516A2CEA /* Blocks */,
 				29B97315FDCFA39411CA2CEA /* Headers */,
+				EFBB7BC31E0C599800331AB1 /* Assets */,
 				080E96DDFE201D6D7F000001 /* Source */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -224,6 +237,20 @@
 			name = buildmesh;
 			sourceTree = "<group>";
 		};
+		EFBB7BC31E0C599800331AB1 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				EFBB7BC41E0C599800331AB1 /* renderBirds_f.glsl */,
+				EFBB7BC51E0C599800331AB1 /* renderBirds_g.glsl */,
+				EFBB7BC61E0C599800331AB1 /* renderBirds_v.glsl */,
+				EFBB7BC71E0C599800331AB1 /* runBirds_v.glsl */,
+				EFBB7BC81E0C599800331AB1 /* runBirdsPosition_f.glsl */,
+				EFBB7BC91E0C599800331AB1 /* runBirdsVelocity_f.glsl */,
+			);
+			name = Assets;
+			path = ../assets;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -277,6 +304,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				25375978F2FB4832BDDED385 /* CinderApp.icns in Resources */,
+				EFBB7BCA1E0C599800331AB1 /* renderBirds_f.glsl in Resources */,
+				EFBB7BCE1E0C599800331AB1 /* runBirdsPosition_f.glsl in Resources */,
+				EFBB7BCD1E0C599800331AB1 /* runBirds_v.glsl in Resources */,
+				EFBB7BCF1E0C599800331AB1 /* runBirdsVelocity_f.glsl in Resources */,
+				EFBB7BCB1E0C599800331AB1 /* renderBirds_g.glsl in Resources */,
+				EFBB7BCC1E0C599800331AB1 /* renderBirds_v.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
