@@ -18,12 +18,11 @@
 		00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995591B128DF400A5C623 /* IOSurface.framework */; };
 		18AEAF3BACAF479691EBDE88 /* MeshHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 61F8F3306DB74D4E9BB7F392 /* MeshHelpers.cpp */; };
 		25375978F2FB4832BDDED385 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = F9C5424548814427980179FE /* CinderApp.icns */; };
-		3D31C3D003324D8AA2B375C7 /* Item.hpp in Sources */ = {isa = PBXBuildFile; fileRef = F9A6782771A144499F8B1EA2 /* Item.hpp */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
-		652AAFA0CCE54AD193CCD5D9 /* Gradient.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 935F413663434EED87F066B8 /* Gradient.hpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		C4CF443CF3DE41D5848B440B /* GeomEater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 59178F0FB20446A6AB1741BB /* GeomEater.cpp */; };
 		DD827DE9AA0F4F119F3EAA30 /* FlockingProjectApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B08EBF1EC9E469F832BE5F0 /* FlockingProjectApp.cpp */; };
+		EF19BD261E0AF4F500EF88AD /* DoubleFbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF19BD241E0AF4F500EF88AD /* DoubleFbo.cpp */; };
 		EF7E4EF01E01CA3E00AE6B47 /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EE81E01CA3E00AE6B47 /* Mesh.cpp */; };
 		EF7E4EF11E01CA3E00AE6B47 /* MeshBuilds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EEA1E01CA3E00AE6B47 /* MeshBuilds.cpp */; };
 		EF7E4EF21E01CA3E00AE6B47 /* MeshGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EF7E4EEC1E01CA3E00AE6B47 /* MeshGroup.cpp */; };
@@ -59,6 +58,8 @@
 		CF27E893EFB44D48B5DA37CC /* FlockingProject_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = FlockingProject_Prefix.pch; sourceTree = "<group>"; };
 		E0D44E955C5F4494B54EDF40 /* CoreMath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoreMath.h; path = "../../../../Code/cinder/blocks/core-util/CoreMath.h"; sourceTree = "<group>"; };
 		E5EE37ED9A5B4FB7B071C877 /* MeshHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MeshHelpers.h; path = "../../../../Code/cinder/blocks/core-util/MeshHelpers.h"; sourceTree = "<group>"; };
+		EF19BD241E0AF4F500EF88AD /* DoubleFbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DoubleFbo.cpp; path = "../../../cinder/blocks/core-util/DoubleFbo.cpp"; sourceTree = "<group>"; };
+		EF19BD251E0AF4F500EF88AD /* DoubleFbo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DoubleFbo.h; path = "../../../cinder/blocks/core-util/DoubleFbo.h"; sourceTree = "<group>"; };
 		EF7E4EE61E01CA3E00AE6B47 /* buildmesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = buildmesh.h; path = ../../../cpp/buildmesh/buildmesh.h; sourceTree = "<group>"; };
 		EF7E4EE71E01CA3E00AE6B47 /* MathBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathBase.h; path = ../../../cpp/buildmesh/MathBase.h; sourceTree = "<group>"; };
 		EF7E4EE81E01CA3E00AE6B47 /* Mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mesh.cpp; path = ../../../cpp/buildmesh/Mesh.cpp; sourceTree = "<group>"; };
@@ -190,6 +191,8 @@
 		AF8FA45F39C846AB94CF612A /* core-util */ = {
 			isa = PBXGroup;
 			children = (
+				EF19BD241E0AF4F500EF88AD /* DoubleFbo.cpp */,
+				EF19BD251E0AF4F500EF88AD /* DoubleFbo.h */,
 				E0D44E955C5F4494B54EDF40 /* CoreMath.h */,
 				3DD2192F6AFA4278ADCF95B9 /* CoreMath.cpp */,
 				5BC1C285FDAE4BD2B70FB4B2 /* GeomEater.h */,
@@ -287,11 +290,10 @@
 				DD827DE9AA0F4F119F3EAA30 /* FlockingProjectApp.cpp in Sources */,
 				EF7E4EF31E01CA3E00AE6B47 /* Vertex.cpp in Sources */,
 				FEA03FE921E244F590AFCA25 /* CoreMath.cpp in Sources */,
+				EF19BD261E0AF4F500EF88AD /* DoubleFbo.cpp in Sources */,
 				EF7E4EF21E01CA3E00AE6B47 /* MeshGroup.cpp in Sources */,
 				C4CF443CF3DE41D5848B440B /* GeomEater.cpp in Sources */,
 				EF7E4EF01E01CA3E00AE6B47 /* Mesh.cpp in Sources */,
-				652AAFA0CCE54AD193CCD5D9 /* Gradient.hpp in Sources */,
-				3D31C3D003324D8AA2B375C7 /* Item.hpp in Sources */,
 				18AEAF3BACAF479691EBDE88 /* MeshHelpers.cpp in Sources */,
 				EF7E4EF11E01CA3E00AE6B47 /* MeshBuilds.cpp in Sources */,
 			);

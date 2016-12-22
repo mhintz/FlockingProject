@@ -4,8 +4,8 @@ layout(points) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 in VertexData {
+  vec4 velocity;
   vec4 color;
-  vec2 velocity;
 } gs_in[];
 
 uniform mat4 ciModelViewProjection;
@@ -14,7 +14,7 @@ uniform float uBirdSize;
 out vec4 fColor;
 
 void main() {
-  vec4 vel = uBirdSize * vec4(normalize(gs_in[0].velocity), 0, 0);
+  vec4 vel = uBirdSize * gs_in[0].velocity;
 
   gl_Position = ciModelViewProjection * (gl_in[0].gl_Position + vel);
   fColor = gs_in[0].color;
