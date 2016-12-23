@@ -16,7 +16,7 @@ void main() {
   vec2 pos = texture(uPositions, texIndex).xy;
   vec2 vel = texture(uVelocities, texIndex).xy;
 
-  vec2 newPos = mod(pos + vel, vec2(uScreenWidth, uScreenHeight));
+  vec2 newPos = pos + vel;
 
   // Apply bounds
   if (newPos.x < -uBirdSize) { newPos.x = uScreenWidth + uBirdSize; }
@@ -24,5 +24,5 @@ void main() {
   if (newPos.x > uScreenWidth + uBirdSize) { newPos.x = -uBirdSize; }
   if (newPos.y > uScreenHeight + uBirdSize) { newPos.y = -uBirdSize; }
 
-  FragColor = vec4(newPos, 1, 1);
+  FragColor = vec4(newPos, 0, 1);
 }

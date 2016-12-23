@@ -125,8 +125,6 @@ void FlockingProjectApp::setup()
 
 	mBirdVelUpdateProg = gl::GlslProg::create(loadAsset("runBirds_v.glsl"), loadAsset("runBirdsVelocity_f.glsl"));
 	mBirdVelUpdateProg->uniform("uGridSide", mFboSide);
-	mBirdVelUpdateProg->uniform("uScreenWidth", mWidth);
-	mBirdVelUpdateProg->uniform("uScreenHeight", mHeight);
 	mBirdVelUpdateProg->uniform("uPositions", mPosTextureBind);
 	mBirdVelUpdateProg->uniform("uVelocities", mVelTextureBind);
 

@@ -1,8 +1,6 @@
 #version 330
 
 uniform int uGridSide;
-uniform int uScreenWidth;
-uniform int uScreenHeight;
 
 uniform sampler2D uPositions;
 uniform sampler2D uVelocities;
