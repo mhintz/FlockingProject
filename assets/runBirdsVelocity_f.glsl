@@ -77,9 +77,9 @@ vec2 flockAccel(in vec2 selfPos, in vec2 selfVel) {
     cohesionSteer = limit(cohesionSteer, MAX_FORCE);
   }
 
-  sepSteer *= 3.5;
-  alignSteer *= 1.0;
-  cohesionSteer *= 1.0;
+  sepSteer *= 5.5;
+  alignSteer *= 3.5;
+  cohesionSteer *= 0.7;
 
   return sepSteer + alignSteer + cohesionSteer;
 }

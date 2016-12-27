@@ -27,7 +27,7 @@ class FlockingProjectApp : public App {
 	float mMaxSpeed = 2.0f;
 	float mMaxForce = 0.03f;
 
-	int mNumBirds = 4096;
+	int mNumBirds = 8192;
 
 	int mWidth;
 	int mHeight;
