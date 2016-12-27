@@ -7,7 +7,7 @@ uniform sampler2D uVelocities;
 
 out vec4 FragColor;
 
-#define EPSILON 0.00001
+#define EPSILON 0.000001
 #define MAX_SPEED 3.0
 #define MAX_FORCE 0.06
 
@@ -29,30 +29,27 @@ vec2 flockAccel(in vec2 selfPos, in vec2 selfVel) {
   vec2 cohesionPosition = vec2(0);
   int cohesionNeighbors = 0;
 
-  for (int x = 0; x < uGridSide; x += 1) {
-    for (int y = 0; y < uGridSide; y += 1) {
-      vec2 texUV = vec2(x, y) / uGridSide;
+  for (float x = 0; x < 1.0; x += 1.0 / uGridSide) {
+    for (float y = 0; y < 1.0; y += 1.0 / uGridSide) {
+      vec2 texUV = vec2(x, y);
       vec2 otherPos = texture(uPositions, texUV).xy;
+      vec2 otherVel = texture(uVelocities, texUV).xy;
       float dist = length(otherPos - selfPos);
 
-      float isSelf = dist < EPSILON ? 0.0 : 1.0;
+      float isOther = float(dist > EPSILON);
 
-      if (dist < isSelf * separationNeighborDist) {
-        vec2 fromOther = normalize(selfPos - otherPos) / dist;
-        sepSteer += fromOther;
-        separationNeighbors += 1;
-      }
+      bool withinSeparationDist = dist < isOther * separationNeighborDist;
+      vec2 fromOther = normalize(selfPos - otherPos) / dist;
+      sepSteer += float(withinSeparationDist) * fromOther;
+      separationNeighbors += int(withinSeparationDist) * 1;
 
-      if (dist < isSelf * alignNeighborDist) {
-        vec2 otherVel = texture(uVelocities, texUV).xy;
-        alignSteer += otherVel;
-        alignNeighbors += 1;
-      }
+      bool withinAlignmentDist = dist < isOther * alignNeighborDist;
+      alignSteer += float(withinAlignmentDist) * otherVel;
+      alignNeighbors += int(withinAlignmentDist) * 1;
 
-      if (dist < isSelf * cohesionNeighborDist) {
-        cohesionPosition += otherPos;
-        cohesionNeighbors += 1;
-      }
+      bool withinCohesionDist = dist < isOther * cohesionNeighborDist;
+      cohesionPosition += float(withinCohesionDist) * otherPos;
+      cohesionNeighbors += int(withinCohesionDist) * 1;
     }
   }
 
@@ -85,7 +82,7 @@ vec2 flockAccel(in vec2 selfPos, in vec2 selfVel) {
 }
 
 void main() {
-  vec2 texIndex = gl_FragCoord.xy / vec2(uGridSide, uGridSide);
+  vec2 texIndex = gl_FragCoord.xy / uGridSide;
   vec2 pos = texture(uPositions, texIndex).xy;
   vec2 vel = texture(uVelocities, texIndex).xy;
 
