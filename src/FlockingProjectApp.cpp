@@ -7,16 +7,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-vec2 limit(vec2 v, float lim) {
-	float lim2 = lim * lim;
-	float len2 = length2(v);
-	if (len2 > lim2) {
-		return normalize(v) * lim;
-	}
-	// else
-	return v;
-}
-
 template <typename T>
 size_t vecContentBytes(vector<T> const & vec) {
 	return sizeof(T) * vec.size();
