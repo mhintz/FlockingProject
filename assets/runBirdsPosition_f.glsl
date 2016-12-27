@@ -7,8 +7,6 @@ uniform int uScreenHeight;
 uniform sampler2D uPositions;
 uniform sampler2D uVelocities;
 
-uniform float uBirdSize;
-
 out vec4 FragColor;
 
 void main() {

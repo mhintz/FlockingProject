@@ -9,11 +9,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-template <typename T>
-size_t vecContentBytes(vector<T> const & vec) {
-	return sizeof(T) * vec.size();
-}
-
 class FlockingProjectApp : public App {
   public:
 	static void prepSettings(Settings * settings);
@@ -118,7 +113,6 @@ void FlockingProjectApp::setup()
 	mBirdPosUpdateProg->uniform("uGridSide", mFboSide);
 	mBirdPosUpdateProg->uniform("uScreenWidth", mRenderFboSize.x);
 	mBirdPosUpdateProg->uniform("uScreenHeight", mRenderFboSize.y);
-	mBirdPosUpdateProg->uniform("uBirdSize", mBirdSize);
 	mBirdPosUpdateProg->uniform("uPositions", mPosTextureBind);
 	mBirdPosUpdateProg->uniform("uVelocities", mVelTextureBind);
 
