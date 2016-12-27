@@ -19,10 +19,10 @@ void main() {
   vec2 newPos = pos + vel;
 
   // Apply bounds
-  if (newPos.x < -uBirdSize) { newPos.x = uScreenWidth + uBirdSize; }
-  if (newPos.y < -uBirdSize) { newPos.y = uScreenHeight + uBirdSize; }
-  if (newPos.x > uScreenWidth + uBirdSize) { newPos.x = -uBirdSize; }
-  if (newPos.y > uScreenHeight + uBirdSize) { newPos.y = -uBirdSize; }
+  if (newPos.x < 0) { newPos.x = uScreenWidth; }
+  if (newPos.y < 0) { newPos.y = uScreenHeight; }
+  if (newPos.x > uScreenWidth) { newPos.x = 0; }
+  if (newPos.y > uScreenHeight) { newPos.y = 0; }
 
   FragColor = vec4(newPos, 0, 1);
 }

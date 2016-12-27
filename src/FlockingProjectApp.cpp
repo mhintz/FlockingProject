@@ -2,6 +2,8 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
+#include "cinder/Camera.h"
+#include "cinder/CameraUi.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -27,10 +29,10 @@ class FlockingProjectApp : public App {
 	float mMaxSpeed = 2.0f;
 	float mMaxForce = 0.03f;
 
+	ivec2 mRenderFboSize = ivec2(2000, 1000);
+
 	int mNumBirds = 8192;
 
-	int mWidth;
-	int mHeight;
 	int mFboSide;
 
 	uint8_t mPosTextureBind = 0;
@@ -47,6 +49,15 @@ class FlockingProjectApp : public App {
 	gl::VboMeshRef mBirdIndexMesh;
 	gl::GlslProgRef mBirdRenderProg;
 	gl::BatchRef mBirdRenderBatch;
+
+	gl::FboRef mBirdRenderFbo;
+
+	CameraPersp mCamera;
+	CameraUi mCameraUi;
+
+	gl::VboMeshRef mSphereMesh;
+	gl::GlslProgRef mSphereRenderProg;
+	gl::BatchRef mSphereRenderBatch;
 };
 
 void FlockingProjectApp::prepSettings(Settings * settings) {
@@ -56,8 +67,6 @@ void FlockingProjectApp::prepSettings(Settings * settings) {
 
 void FlockingProjectApp::setup()
 {
-	mWidth = getWindowWidth();
-	mHeight = getWindowHeight();
 	mFboSide = sqrt(mNumBirds);
 	mNumBirds = mFboSide * mFboSide;
 
@@ -74,7 +83,7 @@ void FlockingProjectApp::setup()
 	while (posIter.line()) {
 		while (posIter.pixel()) {
 			// random position on the screen
-			vec2 pos(randFloat(getWindowWidth()), randFloat(getWindowHeight()));
+			vec2 pos(randFloat((float) mRenderFboSize.x), randFloat((float) mRenderFboSize.y));
 			posIter.r() = pos.x;
 			posIter.g() = pos.y;
 			// Note: the z and w coordinates don't matter at the moment - they're never used by the shader
@@ -107,8 +116,8 @@ void FlockingProjectApp::setup()
 	// Initialize the birds update routine
 	mBirdPosUpdateProg = gl::GlslProg::create(loadAsset("runBirds_v.glsl"), loadAsset("runBirdsPosition_f.glsl"));
 	mBirdPosUpdateProg->uniform("uGridSide", mFboSide);
-	mBirdPosUpdateProg->uniform("uScreenWidth", mWidth);
-	mBirdPosUpdateProg->uniform("uScreenHeight", mHeight);
+	mBirdPosUpdateProg->uniform("uScreenWidth", mRenderFboSize.x);
+	mBirdPosUpdateProg->uniform("uScreenHeight", mRenderFboSize.y);
 	mBirdPosUpdateProg->uniform("uBirdSize", mBirdSize);
 	mBirdPosUpdateProg->uniform("uPositions", mPosTextureBind);
 	mBirdPosUpdateProg->uniform("uVelocities", mVelTextureBind);
@@ -135,6 +144,15 @@ void FlockingProjectApp::setup()
 	mBirdRenderProg->uniform("uBirdPositions", mPosTextureBind);
 	mBirdRenderProg->uniform("uBirdVelocities", mVelTextureBind);
 	mBirdRenderBatch = gl::Batch::create(mBirdIndexMesh, mBirdRenderProg, { {geom::CUSTOM_0, "birdIndex"} });
+
+	mBirdRenderFbo = gl::Fbo::create(mRenderFboSize.x, mRenderFboSize.y);
+
+	mCamera.lookAt(vec3(0, 0, 4), vec3(0), vec3(0, 1, 0));
+	mCameraUi = CameraUi(& mCamera, getWindow());
+
+	mSphereMesh = gl::VboMesh::create(geom::Sphere().colors().center(vec3(0)).radius(1.0f).subdivisions(50));
+	mSphereRenderProg = gl::GlslProg::create(loadAsset("renderSphere_v.glsl"), loadAsset("renderSphere_f.glsl"));
+	mSphereRenderBatch = gl::Batch::create(mSphereMesh, mSphereRenderProg);
 }
 
 void FlockingProjectApp::mouseDown( MouseEvent event ) {
@@ -179,19 +197,43 @@ void FlockingProjectApp::update()
 
 void FlockingProjectApp::draw()
 {
-	gl::clear(Color(0, 0, 0));
+	// Draw the birds into the FBO
+	{
+		gl::ScopedFramebuffer scpFbo(mBirdRenderFbo);
 
-	gl::ScopedMatrices scpMat;
-	gl::setMatricesWindow(getWindowWidth(), getWindowHeight());
+		gl::ScopedMatrices scpMat;
+		gl::setMatricesWindow(mRenderFboSize.x, mRenderFboSize.y);
+		gl::ScopedViewport scpView(0, 0, mRenderFboSize.x, mRenderFboSize.y);
 
-	gl::ScopedColor scpColor(Color(1, 1, 1));
+		gl::clear(Color(0, 0, 0));
 
-	gl::ScopedTextureBind scpPosTex(mPositionsSource->getColorTexture(), mPosTextureBind);
-	gl::ScopedTextureBind scpVelTex(mVelocitiesSource->getColorTexture(), mVelTextureBind);
+		gl::ScopedColor scpColor(Color(1, 1, 1));
 
-	mBirdRenderBatch->draw();
+		gl::ScopedTextureBind scpPosTex(mPositionsSource->getColorTexture(), mPosTextureBind);
+		gl::ScopedTextureBind scpVelTex(mVelocitiesSource->getColorTexture(), mVelTextureBind);
 
-	gl::drawString(std::to_string(getAverageFps()), vec2(10.0f, 20.0f), ColorA(1.0f, 1.0f, 1.0f, 1.0f));
+		mBirdRenderBatch->draw();
+	}
+
+	// Draw the sphere
+	{
+		gl::ScopedDepth scpDepth(true);
+		gl::ScopedFaceCulling scpFace(true, GL_BACK);
+
+		gl::ScopedMatrices scpMat;
+		gl::setMatrices(mCamera);
+
+		gl::clear(Color(0, 0, 0));
+
+		gl::ScopedTextureBind scpBirdTex(mBirdRenderFbo->getColorTexture());
+
+		mSphereRenderBatch->draw();
+	}
+
+	// Debug zone
+	{
+		gl::drawString(std::to_string(getAverageFps()), vec2(10.0f, 20.0f), ColorA(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }
 
 CINDER_APP( FlockingProjectApp, RendererGl, &FlockingProjectApp::prepSettings )
