@@ -149,10 +149,6 @@ void FlockingProjectApp::setup()
 	mSphereRenderBatch = gl::Batch::create(mSphereMesh, mSphereRenderProg);
 }
 
-void FlockingProjectApp::mouseDown( MouseEvent event ) {
-
-}
-
 void FlockingProjectApp::keyDown(KeyEvent evt) {
 	if (evt.getCode() == KeyEvent::KEY_ESCAPE) {
 		quit();
